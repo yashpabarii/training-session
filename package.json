@@ -18,6 +18,10 @@
   },
   "homepage": "https://github.com/yashpabarii/training-session#readme",
   "dependencies": {
-    "express": "^4.17.2"
+    "body-parser": "^1.19.1",
+    "express": "^4.17.2",
+    "express-flash": "0.0.2",
+    "express-session": "^1.17.2",
+    "mysql": "^2.18.1"
   }
 }
