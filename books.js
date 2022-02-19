@@ -28,6 +28,63 @@ router.get("/:id", (req, res) => {
   );
 });
 
+router.get("/status/:status", (req, res) => {
+  dbConn.query(
+    "SELECT * FROM books WHERE status = ?",
+    [req.params.status],
+    (err, rows, fields) => {
+      if (!err) {
+        res.send({ data: rows });
+      } else {
+        console.log(err);
+      }
+    }
+  );
+});
+
+router.get("/date/:date", (req, res) => {
+  console.log(req.params.date);
+  dbConn.query(
+    `SELECT * FROM books WHERE DATE(published_date) < DATE('${req.params.date}');`,
+
+    (err, rows, fields) => {
+      if (!err) {
+        res.send({ data: rows });
+      } else {
+        console.log(err);
+      }
+    }
+  );
+});
+
+router.get("/author/:author", (req, res) => {
+  console.log(req.params.date);
+  dbConn.query(
+    `SELECT * FROM books WHERE author = ?`,
+    [req.params.author],
+    (err, rows, fields) => {
+      if (!err) {
+        res.send({ data: rows });
+      } else {
+        console.log(err);
+      }
+    }
+  );
+});
+
+router.get("/category/:categoryname", (req, res) => {
+  dbConn.query(
+    `SELECT * FROM books WHERE category Like '%${req.params.categoryname}%'`,
+    (err, rows, fields) => {
+      if (!err) {
+        res.send({ data: rows });
+      } else {
+        console.log(err);
+      }
+    }
+  );
+});
+
 router.delete("/delete/:id", (req, res) => {
   dbConn.query(
     "DELETE FROM books WHERE id = ?",
@@ -61,6 +118,21 @@ router.post("/add", (req, res) => {
       res.send({ data: results });
     }
   });
+});
+
+router.put("/update/:id", (req, res, next) => {
+  dbConn.query(
+    `UPDATE books SET name = ?, author = ?, category = ?   Where id = ${req.params.id}`,
+    [req.body.name, req.body.author, req.body.category],
+    (err, result) => {
+      if (err) {
+        throw err;
+      } else {
+        result.message = "Book updated succssfully!";
+        res.send({ data: result });
+      }
+    }
+  );
 });
 
 module.exports = router;

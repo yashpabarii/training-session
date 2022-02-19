@@ -5,6 +5,9 @@ const booksRouter = require("./books");
 const session = require("express-session");
 
 const app = express();
+
+app.use(express.urlencoded({ extended: false }));
+
 app.use(express.json());
 
 app.use(
