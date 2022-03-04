@@ -29,6 +29,7 @@ router.get("/:id", (req, res) => {
 });
 
 router.get("/status/:status", (req, res) => {
+  console.log(res);
   dbConn.query(
     "SELECT * FROM books WHERE status = ?",
     [req.params.status],
