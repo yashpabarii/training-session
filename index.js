@@ -3,10 +3,15 @@ const student = require("./student");
 const flash = require("express-flash");
 const booksRouter = require("./books");
 const authRouter = require("./auth");
-
 const session = require("express-session");
-
 const app = express();
+const cors = require("cors");
+
+app.use(
+  cors({
+    origin: "*",
+  })
+);
 
 app.use(express.urlencoded({ extended: false }));
 
@@ -21,6 +26,7 @@ app.use(
     secret: "secret",
   })
 );
+
 app.use(flash());
 
 app.use("/books", booksRouter);
