@@ -44,54 +44,57 @@ router.get("/author", (req, res) => {
 });
 
 router.post("/user/register", (req, res) => {
-  bcrypt.hash(req.body.password, saltRounds, (err, hash) => {
-    console.log(err);
-    console.log(hash);
-    req.body.password = hash;
-    // Store hash in your password DB.
-  });
-
   let data = {
     first_name: req.body.first_name,
     last_name: req.body.last_name,
     email: req.body.email,
     phone_number: req.body.phone_number,
+    password: bcrypt.hashSync(req.body.password, saltRounds),
     address: req.body.address,
     role_id: req.body.role_id,
 
-    password: bcrypt
-      .hash(myPlaintextPassword, saltRounds)
-      .then(function (hash) {
-        // Store hash in your password DB.
-        password = hash;
-      }),
     gender: req.body.gender,
     is_active: 1,
-    // published_date: new Date(),
   };
-
-  console.log(data);
 
   let sqlQuery = "INSERT INTO user SET ?";
 
-  // dbConn.query(sqlQuery, data, (err, results) => {
-  //   if (err) {
-  //     console.log(err);
-  //     throw err;
-  //   } else {
-  //     mailOptions.to = req.body.email;
-  //     mailOptions.context.name = req.body.first_name + req.body.last_name;
+  dbConn.query(sqlQuery, data, (err, results) => {
+    if (err) {
+      console.log(err);
+      throw err;
+    } else {
+      mailOptions.to = req.body.email;
+      mailOptions.context.name = req.body.first_name + req.body.last_name;
 
-  //     transporter.sendMail(mailOptions, function (error, info) {
-  //       if (error) {
-  //         return console.log(error);
-  //       }
-  //       console.log("Message sent: " + info.response);
-  //     });
-  //     results.message = "User added succssfully!";
-  //     res.send({ data: results });
-  //   }
-  // });
+      transporter.sendMail(mailOptions, function (error, info) {
+        if (error) {
+          return console.log(error);
+        }
+      });
+      results.message = "User added succssfully!";
+      res.send({ data: results });
+    }
+  });
+});
+
+router.post("/user/login", async (req, res) => {
+  const email = req.body.email;
+  const password = req.body.password;
+  let myPassword = "";
+
+  await dbConn.query(
+    `SELECT * FROM user WHERE email = '${email}'`,
+    async (err, rows) => {
+      myPassword = rows[0].password;
+      const validPassword = await bcrypt.compare(password, myPassword);
+      if (!validPassword) {
+        res.send({ staus: 200, message: "Login crediantials invalid" });
+      } else {
+        res.send({ staus: 200, message: "Login Successfull" });
+      }
+    }
+  );
 });
 
 module.exports = router;
