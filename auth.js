@@ -4,6 +4,8 @@ const dbConn = require("./db");
 const bcrypt = require("bcrypt");
 const saltRounds = 10;
 
+require("dotenv").config();
+
 const hbs = require("nodemailer-express-handlebars");
 const nodemailer = require("nodemailer");
 const path = require("path");
@@ -40,6 +42,7 @@ var mailOptions = {
 
 router.get("/author", (req, res) => {
   res.send({ data: "works" });
+  console.log(process.env);
   console.log({ data: "works" });
 });
 
