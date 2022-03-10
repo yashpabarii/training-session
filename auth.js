@@ -1,10 +1,14 @@
+require("dotenv").config();
+
 const express = require("express");
 const router = express.Router();
 const dbConn = require("./db");
 const bcrypt = require("bcrypt");
-const saltRounds = 10;
+const jwt = require("jsonwebtoken");
 
-require("dotenv").config();
+const saltRounds = 10;
+const jwtKey = process.env.JWT_SECRET_KEY;
+const jwtExpirySeconds = process.env.JWT_EXPIRATION_TIME;
 
 const hbs = require("nodemailer-express-handlebars");
 const nodemailer = require("nodemailer");
@@ -42,7 +46,7 @@ var mailOptions = {
 
 router.get("/author", (req, res) => {
   res.send({ data: "works" });
-  console.log(process.env);
+  console.log(process.env.JWT_SECRET_KEY);
   console.log({ data: "works" });
 });
 
@@ -94,7 +98,17 @@ router.post("/user/login", async (req, res) => {
       if (!validPassword) {
         res.send({ staus: 200, message: "Login crediantials invalid" });
       } else {
-        res.send({ staus: 200, message: "Login Successfull" });
+        const token = jwt.sign({ email }, jwtKey, {
+          algorithm: "HS256",
+          expiresIn: jwtExpirySeconds,
+        });
+        res.cookie("token", token, { maxAge: jwtExpirySeconds * 1000 });
+        res.send({
+          staus: 200,
+          data: token,
+          message: "User Logged In Successfully!",
+        });
+        res.end();
       }
     }
   );
