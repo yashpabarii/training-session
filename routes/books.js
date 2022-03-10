@@ -1,7 +1,7 @@
 const e = require("express");
 const express = require("express");
 const router = express.Router();
-const dbConn = require("./db");
+const dbConn = require("./../db");
 
 router.get("/", function (req, res, next) {
   dbConn.query("SELECT * FROM books ORDER BY id desc", function (err, rows) {
