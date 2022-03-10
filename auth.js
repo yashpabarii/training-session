@@ -102,7 +102,7 @@ router.post("/user/login", async (req, res) => {
           algorithm: "HS256",
           expiresIn: jwtExpirySeconds,
         });
-        res.cookie("token", token, { maxAge: jwtExpirySeconds * 1000 });
+        res.cookie("token", token);
         res.send({
           staus: 200,
           data: token,
@@ -112,6 +112,16 @@ router.post("/user/login", async (req, res) => {
       }
     }
   );
+});
+
+router.post("/user/welcome", (req, res) => {
+  const tokens = req.cookies.token;
+
+  console.log(req.cookies.token);
+
+  payload = jwt.verify(tokens, jwtKey);
+
+  console.log(payload, "++++++++++++++++++++++++++++++++");
 });
 
 module.exports = router;
