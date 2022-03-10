@@ -85,6 +85,32 @@ router.post("/user/register", (req, res) => {
   });
 });
 
+router.post("/user/forgot-password", (req, res) => {
+  let data = {
+    email: req.body.email,
+  };
+
+  let sqlQuery = `SELECT * FROM user WHERE email = '${data.email}'`;
+
+  dbConn.query(sqlQuery, data, (err, results) => {
+    if (err) {
+      throw err;
+    } else {
+      mailOptions.to = data.email;
+      mailOptions.context.name = results[0].first_name + results[0].last_name;
+      mailOptions.template = "forgot-password";
+
+      transporter.sendMail(mailOptions, function (error, info) {
+        if (error) {
+          return console.log(error);
+        }
+      });
+      results.message = "User added succssfully!";
+      res.send({ data: results });
+    }
+  });
+});
+
 router.post("/user/login", async (req, res) => {
   const email = req.body.email;
   const password = req.body.password;
