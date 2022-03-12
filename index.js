@@ -3,6 +3,7 @@ const student = require("./routes/student");
 const flash = require("express-flash");
 const booksRouter = require("./routes/books");
 const authRouter = require("./routes/auth");
+const itemRouter = require("./routes/item");
 const session = require("express-session");
 const app = express();
 const cors = require("cors");
@@ -34,7 +35,8 @@ app.use(
 app.use(flash());
 
 app.use("/books", booksRouter);
-app.use("/shop", authRouter);
+app.use("/auth", authRouter);
+app.use("/item", itemRouter);
 
 app.listen(3000, () => {
   console.log("Listening On Port 3000");
