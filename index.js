@@ -7,6 +7,13 @@ const itemRouter = require("./routes/item");
 const session = require("express-session");
 const app = express();
 const cors = require("cors");
+const mongoose = require("./routes/mongodb");
+
+// mongo setup
+
+require("./models/mongo_user.model");
+
+const userController = require("./routes/mongo_users_controller");
 
 const cookieParser = require("cookie-parser");
 
@@ -37,6 +44,7 @@ app.use(flash());
 app.use("/books", booksRouter);
 app.use("/auth", authRouter);
 app.use("/item", itemRouter);
+app.use("/mongoUser", userController);
 
 app.listen(3000, () => {
   console.log("Listening On Port 3000");
