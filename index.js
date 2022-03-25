@@ -1,13 +1,14 @@
 const express = require("express");
-const student = require("./routes/student");
+const session = require("express-session");
 const flash = require("express-flash");
+const cors = require("cors");
+const mongoose = require("./routes/mongodb");
+
+const student = require("./routes/student");
 const booksRouter = require("./routes/books");
 const authRouter = require("./routes/auth");
 const itemRouter = require("./routes/item");
-const session = require("express-session");
 const app = express();
-const cors = require("cors");
-const mongoose = require("./routes/mongodb");
 
 // mongo setup
 
@@ -49,6 +50,8 @@ app.use("/mongoUser", userController);
 app.listen(3000, () => {
   console.log("Listening On Port 3000");
 });
+
+// Start: Test / Practicle API perform CRUD
 
 app.get("/", (req, res) => {
   res.json({ message: "API is working" });
@@ -111,3 +114,5 @@ app.delete("/api/delete/:id", (req, res) => {
     res.status(404);
   }
 });
+
+//END: CRUD
