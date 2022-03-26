@@ -2,8 +2,9 @@ const express = require("express");
 const session = require("express-session");
 const flash = require("express-flash");
 const cors = require("cors");
-const mongoose = require("./routes/mongodb");
+const cookieParser = require("cookie-parser");
 
+const mongoose = require("./routes/mongodb");
 const student = require("./routes/student");
 const booksRouter = require("./routes/books");
 const authRouter = require("./routes/auth");
@@ -16,8 +17,6 @@ require("./models/mongo_user.model");
 
 const userController = require("./routes/mongo_users_controller");
 
-const cookieParser = require("cookie-parser");
-
 app.use(cookieParser());
 
 app.use(
@@ -25,11 +24,8 @@ app.use(
     origin: "*",
   })
 );
-
 app.use(express.urlencoded({ extended: false }));
-
 app.use(express.json());
-
 app.use(
   session({
     cookie: { maxAge: 60000 },
