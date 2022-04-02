@@ -47,9 +47,10 @@ router.get("/findall", (req, res) => {
 router.get("/findbyid/:id", (req, res) => {
   console.log(req.params.id);
   // return;
-  UserModel.findOne({ UserId: req.params.id }, (err, data) => {
+  UserModel.findOne({ _id: req.params.id }, (err, data) => {
     if (err) {
-      console.log(err);
+      res.status(400).json({ message: "No record found" });
+      // return
     } else {
       res.send({ data: data });
     }
@@ -58,9 +59,9 @@ router.get("/findbyid/:id", (req, res) => {
 
 router.delete("/delete/:id", (req, res) => {
   console.log(req.params.id);
-  UserModel.findByIdAndDelete({ UserId: req.params.id }, (err, data) => {
+  UserModel.findByIdAndDelete({ _id: req.params.id }, (err, data) => {
     if (err) {
-      console.log(err);
+      res.status(400).json({ message: "No record found" });
     } else {
       res.send({ data: data });
     }
