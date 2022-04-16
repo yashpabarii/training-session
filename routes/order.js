@@ -4,7 +4,7 @@ const router = express.Router();
 const dbConn = require("./../db");
 
 router.get("/", function (req, res, next) {
-  dbConn.query("SELECT * FROM item ", function (err, rows) {
+  dbConn.query("SELECT * FROM order ", function (err, rows) {
     if (err) {
       req.flash("error", err);
       res.json({ error: err });
@@ -17,7 +17,7 @@ router.get("/", function (req, res, next) {
 
 router.get("/:id", (req, res) => {
   dbConn.query(
-    "SELECT * FROM item WHERE id = ?",
+    "SELECT * FROM order WHERE id = ?",
     [req.params.id],
     (err, rows, fields) => {
       if (!err) {
@@ -31,20 +31,18 @@ router.get("/:id", (req, res) => {
 
 router.post("/add", (req, res) => {
   let data = {
-    name: req.body.name,
-    author: req.body.description,
-    is_available: 1,
-    price: req.body.price,
-    published_date: new Date(),
+    order_item_id: req.body.order_item_id,
+    user_id: req.body.user_id,
+    total_amount: req.body.total_amount,
   };
 
-  let sqlQuery = "INSERT INTO item SET ?";
+  let sqlQuery = "INSERT INTO order SET ?";
 
   dbConn.query(sqlQuery, data, (err, results) => {
     if (err) {
       throw err;
     } else {
-      results.message = "Item added succssfully!";
+      results.message = "Order added succssfully!";
       res.send({ message: results.message, data: results });
     }
   });
@@ -52,13 +50,13 @@ router.post("/add", (req, res) => {
 
 router.put("/update/:id", (req, res, next) => {
   dbConn.query(
-    `UPDATE item SET name = ?, description = ?, price = ?   Where id = ${req.params.id}`,
-    [req.body.name, req.body.description, req.body.price],
+    `UPDATE order SET order_item_id = ?, user_id = ?, total_amount = ?   Where id = ${req.params.id}`,
+    [req.body.order_item_id, req.body.user_id, req.body.total_amount],
     (err, result) => {
       if (err) {
         throw err;
       } else {
-        result.message = "Item updated succssfully!";
+        result.message = "Order updated succssfully!";
         res.send({ data: result });
       }
     }
@@ -67,11 +65,28 @@ router.put("/update/:id", (req, res, next) => {
 
 router.delete("/delete/:id", (req, res) => {
   dbConn.query(
-    "DELETE FROM item WHERE id = ?",
+    "DELETE FROM order WHERE id = ?",
     [req.params.id],
     (err, rows, fields) => {
       if (!err) {
-        res.send("Item Record deleted successfully.");
+        res.send("Order deleted successfully.");
+      } else {
+        console.log(err);
+      }
+    }
+  );
+});
+
+// View Order Status Details
+
+router.get("/status/:status", (req, res) => {
+  console.log(res);
+  dbConn.query(
+    "SELECT * FROM order WHERE status = ?",
+    [req.params.status],
+    (err, rows, fields) => {
+      if (!err) {
+        res.send({ data: rows });
       } else {
         console.log(err);
       }

@@ -9,6 +9,7 @@ const student = require("./routes/student");
 const booksRouter = require("./routes/books");
 const authRouter = require("./routes/auth");
 const itemRouter = require("./routes/item");
+const orderRouter = require("./routes/order");
 const app = express();
 
 // mongo setup
@@ -41,6 +42,7 @@ app.use(flash());
 app.use("/books", booksRouter);
 app.use("/auth", authRouter);
 app.use("/item", itemRouter);
+app.use("/order", orderRouter);
 app.use("/mongoUser", userController);
 
 app.listen(3000, () => {
